@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 interface ScheduleRow {
   date: Date;
@@ -327,15 +327,18 @@ export default function Home() {
         scrollContainer.style.overflow = "visible";
       }
 
-      const canvas = await html2canvas(el, {
-        scale: 2,
-        useCORS: true,
+      const imgData = await toPng(el, {
+        quality: 0.95,
         backgroundColor: "#ffffff",
-        logging: false,
-        ignoreElements: (element) => element.classList?.contains("no-print"),
+        filter: (node) => !(node instanceof HTMLElement && node.classList.contains("no-print")),
       });
 
-      const imgData = canvas.toDataURL("image/png");
+      const img = new Image();
+      img.src = imgData;
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
@@ -346,7 +349,7 @@ export default function Home() {
       const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 20;
       const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgHeight = (img.height * imgWidth) / img.width;
 
       let heightLeft = imgHeight;
       let position = margin;
@@ -387,17 +390,15 @@ export default function Home() {
         scrollContainer.style.overflow = "visible";
       }
 
-      const canvas = await html2canvas(el, {
-        scale: 2,
-        useCORS: true,
+      const imgData = await toPng(el, {
+        quality: 0.95,
         backgroundColor: "#ffffff",
-        logging: false,
-        ignoreElements: (element) => element.classList?.contains("no-print"),
+        filter: (node) => !(node instanceof HTMLElement && node.classList.contains("no-print")),
       });
 
       const link = document.createElement("a");
       link.download = "sunrise-sleep-planner.png";
-      link.href = canvas.toDataURL("image/png");
+      link.href = imgData;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

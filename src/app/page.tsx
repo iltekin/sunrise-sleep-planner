@@ -671,13 +671,13 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full no-print">
-                  <div className="inline-flex rounded-xl border border-zinc-200 bg-white h-12 shadow-sm">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-3 w-full items-center no-print">
+                  <div className="inline-flex rounded-xl border border-zinc-200 bg-white h-12 shadow-sm w-full sm:w-auto">
                     <button
                       type="button"
                       disabled={isDownloadingPdf || isDownloadingImg}
                       onClick={downloadPDF}
-                      className="inline-flex items-center justify-center px-4 sm:px-5 font-medium text-zinc-700 hover:bg-zinc-50 transition-colors rounded-l-xl disabled:opacity-50 text-sm sm:text-base outline-none"
+                      className="inline-flex flex-1 sm:flex-initial items-center justify-center px-4 sm:px-5 font-medium text-zinc-700 hover:bg-zinc-50 transition-colors rounded-l-xl disabled:opacity-50 text-sm sm:text-base outline-none"
                     >
                       {isDownloadingPdf ? (
                         <Loader2 className="h-5 w-5 mr-2 animate-spin text-zinc-500" />
@@ -700,7 +700,7 @@ export default function Home() {
                           type="button"
                           disabled={isDownloadingImg}
                           onClick={downloadImage}
-                          className="w-full flex items-center px-3 py-2 text-sm font-medium hover:bg-zinc-100 rounded-lg text-zinc-700 transition-colors disabled:opacity-50"
+                          className="w-full flex items-center px-3 py-2 text-sm sm:text-base font-medium hover:bg-zinc-100 rounded-lg text-zinc-700 transition-colors disabled:opacity-50"
                         >
                           {isDownloadingImg ? (
                             <Loader2 className="h-4 w-4 mr-2 animate-spin text-zinc-500" />
@@ -712,24 +712,26 @@ export default function Home() {
                       </PopoverContent>
                     </Popover>
                   </div>
+
                   <Button 
                     variant="outline" 
-                    className="border-zinc-200 text-zinc-700 hover:bg-zinc-50 rounded-xl font-medium px-6 h-12" 
+                    className="w-full sm:w-auto border-zinc-200 text-zinc-700 hover:bg-zinc-50 rounded-xl font-medium text-sm sm:text-base px-5 h-12 shadow-sm" 
                     onClick={() => {
                       navigator.clipboard.writeText(window.location.href);
                       setCopied(true);
                       setTimeout(() => setCopied(false), 2000);
                     }}
                   >
-                    {copied ? <Check className="h-5 w-5 mr-2 text-green-600" /> : <Share2 className="h-5 w-5 mr-2" />}
+                    {copied ? <Check className="h-5 w-5 mr-2 text-green-600" /> : <Share2 className="h-5 w-5 mr-2 text-zinc-500" />}
                     {copied ? t.copied : t.share}
                   </Button>
+
                   <Button 
                     variant="outline" 
-                    className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 rounded-xl font-medium px-6 h-12" 
+                    className="w-full sm:w-auto sm:ml-auto border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 rounded-xl font-medium text-sm sm:text-base px-5 h-12 shadow-sm" 
                     onClick={() => { window.history.pushState(null, '', window.location.pathname); setStep(1); }}
                   >
-                    <RefreshCcw className="h-5 w-5 mr-2" />
+                    <RefreshCcw className="h-5 w-5 mr-2 text-emerald-600" />
                     {t.startOver}
                   </Button>
                 </div>

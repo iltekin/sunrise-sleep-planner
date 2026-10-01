@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { format, addMonths, subMinutes, subHours, parse, addDays, differenceInDays, isToday } from "date-fns";
 import { tr, enUS, es, fr, de, zhCN, ar, ru, pt, ja } from "date-fns/locale";
 import { translations, Language } from "@/lib/i18n";
-import { CalendarIcon, Loader2, MapPin, ArrowRight, ArrowLeft, Share2, Check, Download, HelpCircle, Coffee, Globe, Sun, RefreshCcw } from "lucide-react";
+import { CalendarIcon, Loader2, MapPin, ArrowRight, ArrowLeft, Share2, Check, Download, HelpCircle, Coffee, Globe, Sun, ChevronDown, Image as ImageIcon, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";

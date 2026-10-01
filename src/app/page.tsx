@@ -319,16 +319,22 @@ export default function Home() {
     const scrollContainer = el.querySelector(".overflow-auto") as HTMLElement | null;
     const originalMaxHeight = scrollContainer?.style.maxHeight || "";
     const originalOverflow = scrollContainer?.style.overflow || "";
+    const originalWidth = el.style.width || "";
+    const originalMinWidth = el.style.minWidth || "";
 
     setIsDownloadingPdf(true);
     try {
+      el.classList.add("is-exporting");
+      el.style.width = "850px";
+      el.style.minWidth = "850px";
+
       if (scrollContainer) {
         scrollContainer.style.maxHeight = "none";
         scrollContainer.style.overflow = "visible";
       }
 
       const imgData = await toPng(el, {
-        quality: 0.95,
+        quality: 0.98,
         backgroundColor: "#ffffff",
         filter: (node) => !(node instanceof HTMLElement && node.classList.contains("no-print")),
       });
@@ -347,31 +353,35 @@ export default function Home() {
 
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 20;
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (img.height * imgWidth) / img.width;
+      const margin = 24;
+      const printWidth = pageWidth - margin * 2;
+      const printHeight = (img.height * printWidth) / img.width;
+      const usableHeight = pageHeight - margin * 2;
 
-      let heightLeft = imgHeight;
-      let position = margin;
-
-      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight - margin * 2;
+      let heightLeft = printHeight;
+      let page = 0;
 
       while (heightLeft > 0) {
-        position = heightLeft - imgHeight + margin;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight - margin * 2;
+        if (page > 0) {
+          pdf.addPage();
+        }
+        const position = margin - (page * usableHeight);
+        pdf.addImage(imgData, "PNG", margin, position, printWidth, printHeight);
+        heightLeft -= usableHeight;
+        page++;
       }
 
       pdf.save("sunrise-sleep-planner.pdf");
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
+      el.style.width = originalWidth;
+      el.style.minWidth = originalMinWidth;
       if (scrollContainer) {
         scrollContainer.style.maxHeight = originalMaxHeight;
         scrollContainer.style.overflow = originalOverflow;
       }
+      el.classList.remove("is-exporting");
       setIsDownloadingPdf(false);
     }
   };
@@ -382,16 +392,22 @@ export default function Home() {
     const scrollContainer = el.querySelector(".overflow-auto") as HTMLElement | null;
     const originalMaxHeight = scrollContainer?.style.maxHeight || "";
     const originalOverflow = scrollContainer?.style.overflow || "";
+    const originalWidth = el.style.width || "";
+    const originalMinWidth = el.style.minWidth || "";
 
     setIsDownloadingImg(true);
     try {
+      el.classList.add("is-exporting");
+      el.style.width = "850px";
+      el.style.minWidth = "850px";
+
       if (scrollContainer) {
         scrollContainer.style.maxHeight = "none";
         scrollContainer.style.overflow = "visible";
       }
 
       const imgData = await toPng(el, {
-        quality: 0.95,
+        quality: 0.98,
         backgroundColor: "#ffffff",
         filter: (node) => !(node instanceof HTMLElement && node.classList.contains("no-print")),
       });
@@ -405,10 +421,13 @@ export default function Home() {
     } catch (err) {
       console.error("Image generation failed:", err);
     } finally {
+      el.style.width = originalWidth;
+      el.style.minWidth = originalMinWidth;
       if (scrollContainer) {
         scrollContainer.style.maxHeight = originalMaxHeight;
         scrollContainer.style.overflow = originalOverflow;
       }
+      el.classList.remove("is-exporting");
       setIsDownloadingImg(false);
     }
   };
@@ -659,7 +678,7 @@ export default function Home() {
         {step === 5 && schedule.length > 0 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
             <Card id="printable-schedule" className="border-0 shadow-2xl rounded-2xl overflow-hidden bg-white/90 backdrop-blur-xl">
-              <div className="bg-white p-6 sm:p-8 flex flex-col gap-6">
+              <div className="bg-white p-6 sm:p-8 flex flex-col gap-6 schedule-header">
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 mb-2 sm:mb-3">{t.resultTitle}</h2>
                   <div className="text-zinc-500 text-sm sm:text-base leading-relaxed min-h-[24px] flex items-center">

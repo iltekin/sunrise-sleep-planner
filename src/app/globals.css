@@ -143,8 +143,40 @@
     width: 100%;
     box-shadow: none !important;
     background: white !important;
+    border: none !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    gap: 0 !important;
   }
   .no-print {
     display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+  #printable-schedule .schedule-header {
+    padding: 1rem 1.5rem 0.5rem 1.5rem !important;
+    gap: 0.25rem !important;
   }
 }
+
+.is-exporting .no-print {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+.is-exporting {
+  box-shadow: none !important;
+  background: white !important;
+  border: none !important;
+}
+
+.is-exporting .schedule-header {
+  padding-bottom: 0.75rem !important;
+  gap: 0.25rem !important;
+}
+

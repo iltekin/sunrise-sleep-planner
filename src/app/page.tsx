@@ -13,6 +13,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface ScheduleRow {
   date: Date;
@@ -308,51 +310,121 @@ export default function Home() {
   };
 
   
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+  const [isDownloadingImg, setIsDownloadingImg] = useState(false);
+
+  const downloadPDF = async () => {
+    const el = document.getElementById("printable-schedule");
+    if (!el) return;
+    const scrollContainer = el.querySelector(".overflow-auto") as HTMLElement | null;
+    const originalMaxHeight = scrollContainer?.style.maxHeight || "";
+    const originalOverflow = scrollContainer?.style.overflow || "";
+
+    setIsDownloadingPdf(true);
+    try {
+      if (scrollContainer) {
+        scrollContainer.style.maxHeight = "none";
+        scrollContainer.style.overflow = "visible";
+      }
+
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        ignoreElements: (element) => element.classList?.contains("no-print"),
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4",
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 20;
+      const imgWidth = pageWidth - margin * 2;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = margin;
+
+      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight - margin * 2;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight + margin;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight - margin * 2;
+      }
+
+      pdf.save("sunrise-sleep-planner.pdf");
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      if (scrollContainer) {
+        scrollContainer.style.maxHeight = originalMaxHeight;
+        scrollContainer.style.overflow = originalOverflow;
+      }
+      setIsDownloadingPdf(false);
+    }
+  };
+
+  const downloadImage = async () => {
+    const el = document.getElementById("printable-schedule");
+    if (!el) return;
+    const scrollContainer = el.querySelector(".overflow-auto") as HTMLElement | null;
+    const originalMaxHeight = scrollContainer?.style.maxHeight || "";
+    const originalOverflow = scrollContainer?.style.overflow || "";
+
+    setIsDownloadingImg(true);
+    try {
+      if (scrollContainer) {
+        scrollContainer.style.maxHeight = "none";
+        scrollContainer.style.overflow = "visible";
+      }
+
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        ignoreElements: (element) => element.classList?.contains("no-print"),
+      });
+
+      const link = document.createElement("a");
+      link.download = "sunrise-sleep-planner.png";
+      link.href = canvas.toDataURL("image/png");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error("Image generation failed:", err);
+    } finally {
+      if (scrollContainer) {
+        scrollContainer.style.maxHeight = originalMaxHeight;
+        scrollContainer.style.overflow = originalOverflow;
+      }
+      setIsDownloadingImg(false);
+    }
+  };
+
   if (!mounted) return null;
 
   const getOffsetString = (val: string) => {
     const num = Number(val);
-    if (num < 0) return `güneşin doğuşundan ${Math.abs(num)} dk önce`;
-    if (num > 0) return `güneşin doğuşundan ${num} dk sonra`;
-    return "tam güneş doğarken";
+    if (num < 0) return t.calcBefore.replace('{val}', Math.abs(num).toString());
+    if (num > 0) return t.calcAfter.replace('{val}', num.toString());
+    return t.calcExact;
   };
 
   return (
     <div className="min-h-screen bg-zinc-50 flex items-start justify-center p-4 md:p-8 font-sans">
       <div className={cn("w-full space-y-8 transition-all duration-700", step === 5 ? "max-w-4xl" : "max-w-xl")}>
-        
-        
-        <div className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-50 no-print">
-          <Popover open={langOpen} onOpenChange={setLangOpen}>
-            <PopoverTrigger className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-full shadow-2xl border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-zinc-900 hover:bg-white hover:scale-105 transition-all duration-300 outline-none">
-              <Globe className="h-6 w-6" />
-            </PopoverTrigger>
-            <PopoverContent align="end" side="top" className="w-40 p-2 rounded-2xl shadow-2xl border-zinc-200 bg-white/95 backdrop-blur-xl mb-4">
-              <div className="flex flex-col gap-1">
-                {Object.entries({
-                  tr: "Türkçe",
-                  en: "English",
-                  es: "Español",
-                  fr: "Français",
-                  de: "Deutsch",
-                  pt: "Português",
-                  ru: "Русский",
-                  ja: "日本語",
-                  zh: "中文",
-                  ar: "العربية"
-                }).map(([key, name]) => (
-                    <button
-                      key={key}
-                      onClick={() => { setLang(key as Language); setLangOpen(false); }}
-                      className={`text-left px-4 py-2.5 text-sm rounded-xl transition-all ${lang === key ? "bg-zinc-900 font-bold text-white shadow-md" : "text-zinc-600 hover:bg-zinc-100 font-medium"}`}
-                    >
-                      {name}
-                    </button>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+
 
         <div className="text-center space-y-4 no-print">
           <div className="flex justify-center mb-2 animate-in fade-in zoom-in duration-700">
@@ -599,14 +671,46 @@ export default function Home() {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full no-print">
-                  <Button 
-                    variant="outline" 
-                    className="border-zinc-200 text-zinc-700 hover:bg-zinc-50 rounded-xl font-medium px-6 h-12" 
-                    onClick={() => window.print()}
-                  >
-                    <Download className="h-5 w-5 mr-2" />
-                    {t.downloadPdf}
-                  </Button>
+                  <div className="inline-flex rounded-xl border border-zinc-200 bg-white h-12 shadow-sm">
+                    <button
+                      type="button"
+                      disabled={isDownloadingPdf || isDownloadingImg}
+                      onClick={downloadPDF}
+                      className="inline-flex items-center justify-center px-4 sm:px-5 font-medium text-zinc-700 hover:bg-zinc-50 transition-colors rounded-l-xl disabled:opacity-50 text-sm sm:text-base outline-none"
+                    >
+                      {isDownloadingPdf ? (
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin text-zinc-500" />
+                      ) : (
+                        <Download className="h-5 w-5 mr-2 text-zinc-500" />
+                      )}
+                      {t.downloadPdf}
+                    </button>
+                    <div className="w-[1px] bg-zinc-200 my-2.5"></div>
+                    <Popover>
+                      <PopoverTrigger
+                        disabled={isDownloadingPdf || isDownloadingImg}
+                        className="px-2.5 hover:bg-zinc-50 transition-colors rounded-r-xl outline-none flex items-center justify-center text-zinc-500 hover:text-zinc-700 disabled:opacity-50"
+                        aria-label="Download options"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </PopoverTrigger>
+                      <PopoverContent align="end" side="bottom" className="w-44 p-1.5 rounded-xl shadow-xl border-zinc-200 bg-white z-50">
+                        <button
+                          type="button"
+                          disabled={isDownloadingImg}
+                          onClick={downloadImage}
+                          className="w-full flex items-center px-3 py-2 text-sm font-medium hover:bg-zinc-100 rounded-lg text-zinc-700 transition-colors disabled:opacity-50"
+                        >
+                          {isDownloadingImg ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin text-zinc-500" />
+                          ) : (
+                            <ImageIcon className="h-4 w-4 mr-2 text-zinc-500" />
+                          )}
+                          {t.downloadImg}
+                        </button>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <Button 
                     variant="outline" 
                     className="border-zinc-200 text-zinc-700 hover:bg-zinc-50 rounded-xl font-medium px-6 h-12" 
@@ -692,6 +796,39 @@ export default function Home() {
           <p className="text-sm text-zinc-400 font-medium">
             {t.builtBy} <a href="https://x.com/sezeriltekin" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-zinc-900 transition-colors">@sezeriltekin</a>
           </p>
+
+          {/* Language Selector: Centered below footer on mobile, 50% closer to bottom on desktop */}
+          <div className="flex justify-center sm:block sm:fixed sm:bottom-5 sm:right-6 z-50 no-print pt-2 sm:pt-0">
+            <Popover open={langOpen} onOpenChange={setLangOpen}>
+              <PopoverTrigger className="w-8 h-8 sm:w-12 sm:h-12 bg-white/90 backdrop-blur-md rounded-full shadow-md sm:shadow-2xl border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-zinc-900 hover:bg-white hover:scale-105 transition-all duration-300 outline-none">
+                <Globe className="h-4 w-4 sm:h-6 sm:w-6" />
+              </PopoverTrigger>
+              <PopoverContent align="center" side="top" className="w-40 p-2 rounded-2xl shadow-2xl border-zinc-200 bg-white/95 backdrop-blur-xl mb-3 sm:mb-4">
+                <div className="flex flex-col gap-1">
+                  {Object.entries({
+                    tr: "Türkçe",
+                    en: "English",
+                    es: "Español",
+                    fr: "Français",
+                    de: "Deutsch",
+                    pt: "Português",
+                    ru: "Русский",
+                    ja: "日本語",
+                    zh: "中文",
+                    ar: "العربية"
+                  }).map(([key, name]) => (
+                      <button
+                        key={key}
+                        onClick={() => { setLang(key as Language); setLangOpen(false); }}
+                        className={`text-left px-4 py-2.5 text-sm rounded-xl transition-all ${lang === key ? "bg-zinc-900 font-bold text-white shadow-md" : "text-zinc-600 hover:bg-zinc-100 font-medium"}`}
+                      >
+                        {name}
+                      </button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
       </div>

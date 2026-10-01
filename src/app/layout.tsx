@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Uyku Çizelgesi",
+  title: "Sunrise Sleep Planner",
   description: "Uyku döngünü planla.",
 };
 

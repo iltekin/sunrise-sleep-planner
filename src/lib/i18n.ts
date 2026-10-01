@@ -3,7 +3,7 @@ export type Language = "tr" | "en" | "es" | "fr" | "de" | "zh" | "ar" | "ru" | "
 
 export const translations = {
   tr: {
-    title: "Uyku Planı Oluşturucu",
+    title: "Sunrise Sleep Planner",
     subtitle: "Gün doğumuna odaklı uyku planı oluşturucu",
     q1PopoverTitle: "Neden önemli?",
     q1PopoverText: "Ulusal Uyku Vakfı (NSF), yetişkinler için günde 7-9 saat uykuyu önermektedir. Sirkadiyen ritminizle uyumlu, kesintisiz bir uyku süresi belirlemek; hafıza konsolidasyonu, hücre yenilenmesi ve ertesi günkü zihinsel odaklanmanız için kritik öneme sahiptir.",
@@ -52,7 +52,7 @@ export const translations = {
     builtBy: "geliştirici", selectedLoc: "Seçili Konum"
   },
   en: {
-    title: "Sleep Schedule Generator",
+    title: "Sunrise Sleep Planner",
     subtitle: "Sunrise-focused sleep schedule generator",
     q1PopoverTitle: "Why is it important?",
     q1PopoverText: "The National Sleep Foundation (NSF) recommends 7-9 hours of sleep per day for adults. Setting an uninterrupted sleep duration aligned with your circadian rhythm is critical for memory consolidation, cell regeneration, and mental focus the next day.",
@@ -101,7 +101,7 @@ export const translations = {
     builtBy: "built by", selectedLoc: "Selected Location"
   },
   es: {
-    title: "Generador de Horarios de Sueño",
+    title: "Sunrise Sleep Planner",
     subtitle: "Generador de horarios de sueño centrado en el amanecer",
     q1PopoverTitle: "¿Por qué es importante?",
     q1PopoverText: "La Fundación Nacional del Sueño (NSF) recomienda de 7 a 9 horas de sueño diario para adultos. Alinear la duración de su sueño con su ritmo circadiano es crucial para la memoria, la regeneración celular y el enfoque mental.",
@@ -150,7 +150,7 @@ export const translations = {
     builtBy: "creado por", selectedLoc: "Ubicación Seleccionada"
   },
   fr: {
-    title: "Générateur d'Horaires de Sommeil",
+    title: "Sunrise Sleep Planner",
     subtitle: "Générateur axé sur le lever du soleil",
     q1PopoverTitle: "Pourquoi est-ce important ?",
     q1PopoverText: "La National Sleep Foundation (NSF) recommande 7 à 9 heures de sommeil par jour pour les adultes. Un sommeil aligné sur votre rythme circadien est crucial pour la mémoire, la régénération cellulaire et la concentration mentale.",
@@ -199,7 +199,7 @@ export const translations = {
     builtBy: "créé par", selectedLoc: "Emplacement Sélectionné"
   },
   de: {
-    title: "Schlafplan-Generator",
+    title: "Sunrise Sleep Planner",
     subtitle: "Sonnenaufgangsfokussierter Schlafplan",
     q1PopoverTitle: "Warum ist das wichtig?",
     q1PopoverText: "Die National Sleep Foundation (NSF) empfiehlt Erwachsenen 7-9 Stunden Schlaf pro Tag. Eine auf Ihren zirkadianen Rhythmus abgestimmte Schlafdauer ist entscheidend für Gedächtnis, Zellregeneration und mentale Fokussierung.",
@@ -248,7 +248,7 @@ export const translations = {
     builtBy: "entwickelt von", selectedLoc: "Ausgewählter Ort"
   },
   zh: {
-    title: "睡眠时间表生成器",
+    title: "Sunrise Sleep Planner",
     subtitle: "以日出为重点的睡眠时间表",
     q1PopoverTitle: "为什么这很重要？",
     q1PopoverText: "美国国家睡眠基金会（NSF）建议成年人每天睡眠 7-9 小时。设定与您的昼夜节律相一致的睡眠时间对于记忆巩固、细胞再生和第二天的精神集中至关重要。",
@@ -297,7 +297,7 @@ export const translations = {
     builtBy: "开发者", selectedLoc: "所选位置"
   },
   ar: {
-    title: "مولد جدول النوم",
+    title: "Sunrise Sleep Planner",
     subtitle: "جدول نوم يركز على شروق الشمس",
     q1PopoverTitle: "لماذا هذا مهم؟",
     q1PopoverText: "توصي مؤسسة النوم الوطنية بـ 7-9 ساعات للبالغين يومياً. محاذاة مدة نومك مع إيقاعك اليومي أمر بالغ الأهمية لتعزيز الذاكرة وتجديد الخلايا.",
@@ -346,7 +346,7 @@ export const translations = {
     builtBy: "تطوير", selectedLoc: "الموقع المحدد"
   },
   ru: {
-    title: "Генератор графика сна",
+    title: "Sunrise Sleep Planner",
     subtitle: "График сна с ориентацией на рассвет",
     q1PopoverTitle: "Почему это важно?",
     q1PopoverText: "Национальный фонд сна (NSF) рекомендует взрослым спать 7-9 часов. Сон, синхронизированный с циркадным ритмом, критически важен для памяти и восстановления клеток.",
@@ -395,7 +395,7 @@ export const translations = {
     builtBy: "создатель", selectedLoc: "Выбранная локация"
   },
   pt: {
-    title: "Gerador de Horário de Sono",
+    title: "Sunrise Sleep Planner",
     subtitle: "Gerador focado no nascer do sol",
     q1PopoverTitle: "Por que isso é importante?",
     q1PopoverText: "A National Sleep Foundation (NSF) recomenda de 7 a 9 horas de sono por dia para adultos. Um sono alinhado com o seu ritmo circadiano é crucial para a memória, regeneração celular e foco mental.",
@@ -444,7 +444,7 @@ export const translations = {
     builtBy: "criado por", selectedLoc: "Local Selecionado"
   },
   ja: {
-    title: "睡眠スケジュールジェネレーター",
+    title: "Sunrise Sleep Planner",
     subtitle: "日の出に合わせた睡眠スケジュール",
     q1PopoverTitle: "なぜ重要なのですか？",
     q1PopoverText: "米国睡眠財団（NSF）は、成人に1日7〜9時間の睡眠を推奨しています。概日リズムに合わせた睡眠は、記憶の定着や細胞の再生に不可欠です。",

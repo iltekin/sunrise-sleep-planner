@@ -588,10 +588,10 @@ export default function Home() {
             <Card id="printable-schedule" className="border-0 shadow-2xl rounded-2xl overflow-hidden bg-white/90 backdrop-blur-xl">
               <div className="bg-white p-6 sm:p-8 flex flex-col gap-6">
                 <div>
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 mb-1">{t.resultTitle}</h2>
-                  <div className="text-zinc-500 text-base h-6 flex items-center">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 mb-2 sm:mb-3">{t.resultTitle}</h2>
+                  <div className="text-zinc-500 text-sm sm:text-base leading-relaxed min-h-[24px] flex items-center">
                     {selectedLocation ? (
-                      <p>{selectedLocation.name} konumu için {getOffsetString(sunriseOffset)} uyanılacak şekilde hesaplandı.</p>
+                      <p>{t.resultDesc.replace("{loc}", selectedLocation.name || "").replace("{offset}", getOffsetString(sunriseOffset))}</p>
                     ) : (
                       <div className="h-4 w-64 bg-zinc-200 animate-pulse rounded-md"></div>
                     )}

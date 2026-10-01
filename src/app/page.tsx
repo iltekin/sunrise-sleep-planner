@@ -233,20 +233,26 @@ export default function Home() {
       const endDate = addMonths(startD, parseInt(mnths));
       const totalDays = differenceInDays(endDate, startD);
 
-      let currentIterDate = new Date(startD);
+      const fetchEndDate = addDays(endDate, 2);
+      let iter = new Date(startD.getFullYear(), startD.getMonth(), 1);
+      const iterEnd = new Date(fetchEndDate.getFullYear(), fetchEndDate.getMonth(), 1);
+
       let apiData: Array<Record<string, unknown>> = [];
       
-      while (currentIterDate <= endDate) {
-        const y = currentIterDate.getFullYear();
-        const m = currentIterDate.getMonth() + 1;
+      while (iter <= iterEnd) {
+        const y = iter.getFullYear();
+        const m = iter.getMonth() + 1;
         const monthData = await fetchPrayerTimes(y, m, lat, lon);
         apiData = [...apiData, ...monthData];
-        currentIterDate = addMonths(currentIterDate, 1);
+        iter = addMonths(iter, 1);
       }
 
       for (let i = 0; i <= totalDays; i++) {
         const d = addDays(startD, i);
+        const dNext = addDays(d, 1);
         const dStr = format(d, "dd-MM-yyyy");
+        const dNextStr = format(dNext, "dd-MM-yyyy");
+
         const dayData = apiData.find((a) => {
           const dateObj = a.date as { gregorian: { date: string } };
           return dateObj.gregorian.date === dStr;
@@ -263,15 +269,43 @@ export default function Home() {
           dtWake = subMinutes(dtSunrise, parseInt(so) * -1);
         }
 
-        const dtSleep = subHours(dtWake, parseFloat(sh));
-        const dtBed = subMinutes(dtSleep, parseInt(bm));
+        // Yatış saati o günün gecesinde girilecek saattir; yani ERTESİ GÜNÜN gün doğumuna göre hesaplanır!
+        const nextDayData = apiData.find((a) => {
+          const dateObj = a.date as { gregorian: { date: string } };
+          return dateObj.gregorian.date === dNextStr;
+        });
+
+        let dtSleepTimeStr = "";
+        let dtBedTimeStr = "";
+
+        if (nextDayData) {
+          const nextTimings = nextDayData.timings as { Sunrise: string };
+          const nextSunriseStr = nextTimings.Sunrise.split(" ")[0];
+          const dtNextSunrise = parse(nextSunriseStr, "HH:mm", dNext);
+
+          let dtNextWake = dtNextSunrise;
+          if (so) {
+            dtNextWake = subMinutes(dtNextSunrise, parseInt(so) * -1);
+          }
+
+          const dtSleep = subHours(dtNextWake, parseFloat(sh));
+          const dtBed = subMinutes(dtSleep, parseInt(bm));
+
+          dtSleepTimeStr = format(dtSleep, "HH:mm");
+          dtBedTimeStr = format(dtBed, "HH:mm");
+        } else {
+          const dtSleep = subHours(dtWake, parseFloat(sh));
+          const dtBed = subMinutes(dtSleep, parseInt(bm));
+          dtSleepTimeStr = format(dtSleep, "HH:mm");
+          dtBedTimeStr = format(dtBed, "HH:mm");
+        }
 
         results.push({
           date: d,
           sunrise: format(dtSunrise, "HH:mm"),
           wakeTime: format(dtWake, "HH:mm"),
-          sleepTime: format(dtSleep, "HH:mm"),
-          bedTime: format(dtBed, "HH:mm"),
+          sleepTime: dtSleepTimeStr,
+          bedTime: dtBedTimeStr,
         });
       }
 

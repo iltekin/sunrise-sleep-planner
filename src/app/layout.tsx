@@ -14,7 +14,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Sunrise Sleep Planner",
-  description: "Uyku döngünü planla.",
+  description: "Sunrise-focused sleep schedule generator",
+  icons: {
+    icon: [
+      { url: "icon.svg", type: "image/svg+xml" },
+      { url: "favicon.ico", sizes: "any" },
+    ],
+    apple: "apple-icon.png",
+  },
 };
 
 export default function RootLayout({
